@@ -56,6 +56,28 @@ module Enumerable
       Enumerator.new(self)
     end
   end
+
+  def my_none?(&block)
+    if block_given?
+      self.my_each do |item|
+        return false if block.call(item)
+      end
+      true
+    else
+      Enumerator.new(self)
+    end
+  end
+
+  def my_count(&block)
+    if block_given?
+      self.my_each do |item|
+        return false if block.call(item)
+      end
+      true
+    else
+      Enumerator.new(self)
+    end
+  end
 end
 
 # puts "my_each vs. each"
@@ -78,7 +100,12 @@ end
 # puts numbers.my_all?  { |item| item > 3 }
 # puts numbers.all?  { |item| item > 3 }
 
-puts "my_any? vs. any?"
+# puts "my_any? vs. any?"
+# numbers = [1, 2, 3, 4, 5]
+# puts numbers.my_any?  { |item| item > 3 }
+# puts numbers.any?  { |item| item > 3 }
+
+puts "my_none? vs. none?"
 numbers = [1, 2, 3, 4, 5]
-puts numbers.my_any?  { |item| item > 3 }
-puts numbers.any?  { |item| item > 3 }
+puts numbers.my_none?  { |item| item > 3 }
+puts numbers.none?  { |item| item > 3 }
