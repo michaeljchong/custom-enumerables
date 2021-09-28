@@ -45,6 +45,17 @@ module Enumerable
       Enumerator.new(self)
     end
   end
+
+  def my_any?(&block)
+    if block_given?
+      self.my_each do |item|
+        return true if block.call(item)
+      end
+      false
+    else
+      Enumerator.new(self)
+    end
+  end
 end
 
 # puts "my_each vs. each"
@@ -62,8 +73,12 @@ end
 # puts numbers.my_select  { |item| item > 3 }
 # puts numbers.select  { |item| item > 3 }
 
-puts "my_all? vs. all?"
-numbers = [1, 2, 3, 4, 5]
-puts numbers.my_all?  { |item| item > 3 }
-puts numbers.all?  { |item| item > 3 }
+# puts "my_all? vs. all?"
+# numbers = [1, 2, 3, 4, 5]
+# puts numbers.my_all?  { |item| item > 3 }
+# puts numbers.all?  { |item| item > 3 }
 
+puts "my_any? vs. any?"
+numbers = [1, 2, 3, 4, 5]
+puts numbers.my_any?  { |item| item > 3 }
+puts numbers.any?  { |item| item > 3 }
