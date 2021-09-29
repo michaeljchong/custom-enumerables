@@ -91,6 +91,30 @@ module Enumerable
     end
     map
   end
+
+  def my_inject(starting_value = nil, &block)
+    return self.first if self.length == 1
+
+    if starting_value
+      result = starting_value
+      starting_index = 0
+    else
+      result = self.first
+      starting_index = 1
+    end
+    self[starting_index..].my_each do |item|
+      if block_given?
+        result = block.call(result, item)
+      else
+        raise LocalJumpError, "no block given"
+      end
+    end
+    result
+  end
+end
+
+def multiply_els(arr)
+  arr.my_inject { |result, item| result * item }
 end
 
 puts "my_each vs. each"
@@ -151,3 +175,11 @@ p numbers.map
 numbers = [1, 2, 3, 4, 5]
 puts numbers.my_map { |item| item > 3 }
 puts numbers.map { |item| item > 3 }
+
+puts "my_inject vs. inject"
+numbers = [1]
+p numbers.my_inject
+p numbers.inject
+numbers = [2, 4, 5]
+puts multiply_els(numbers)
+puts numbers.inject { |result, item| result * item }
