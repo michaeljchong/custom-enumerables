@@ -36,76 +36,118 @@ module Enumerable
   end
 
   def my_all?(&block)
-    if block_given?
-      self.my_each do |item|
+    self.my_each do |item|
+      if block_given?
         return false unless block.call(item)
+      else
+        return false unless item
       end
-      true
-    else
-      Enumerator.new(self)
     end
+    true
   end
 
   def my_any?(&block)
-    if block_given?
-      self.my_each do |item|
+    self.my_each do |item|
+      if block_given?
         return true if block.call(item)
+      else
+        return true if item
       end
-      false
-    else
-      Enumerator.new(self)
     end
+    false
   end
 
   def my_none?(&block)
-    if block_given?
-      self.my_each do |item|
+    self.my_each do |item|
+      if block_given?
         return false if block.call(item)
+      else
+        return false if item
       end
-      true
-    else
-      Enumerator.new(self)
     end
+    true
   end
 
   def my_count(&block)
-    if block_given?
-      self.my_each do |item|
-        return false if block.call(item)
+    count = 0
+    self.my_each do |item|
+      if block_given?
+        count += 1 if block.call(item)
+      else
+        count += 1
       end
-      true
-    else
-      Enumerator.new(self)
     end
+    count
+  end
+
+  def my_map(&block)
+    map = []
+    self.my_each do |item|
+      if block_given?
+        map << block.call(item)
+      else
+        return Enumerator.new(self)
+      end
+    end
+    map
   end
 end
 
-# puts "my_each vs. each"
-# numbers = [1, 2, 3, 4, 5]
-# numbers.my_each { |item| puts item }
-# numbers.each { |item| puts item }
+puts "my_each vs. each"
+numbers = [1, 2, 3, 4, 5]
+p numbers.my_each
+p numbers.each
+numbers.my_each { |item| puts item }
+numbers.each { |item| puts item }
 
-# puts "my_each_with_index vs. each_with_index"
-# numbers = [1, 2, 3, 4, 5]
-# numbers.my_each_with_index  { |item, idx| puts "#{idx}: #{item}" }
-# numbers.each_with_index  { |item, idx| puts "#{idx}: #{item}" }
+puts "my_each_with_index vs. each_with_index"
+numbers = [1, 2, 3, 4, 5]
+p numbers.my_each_with_index
+p numbers.each_with_index
+numbers.my_each_with_index { |item, idx| puts "#{idx}: #{item}" }
+numbers.each_with_index { |item, idx| puts "#{idx}: #{item}" }
 
-# puts "my_select vs. select"
-# numbers = [1, 2, 3, 4, 5]
-# puts numbers.my_select  { |item| item > 3 }
-# puts numbers.select  { |item| item > 3 }
+puts "my_select vs. select"
+numbers = [1, 2, 3, 4, 5]
+p numbers.my_select
+p numbers.select
+puts numbers.my_select { |item| item > 3 }
+puts numbers.select { |item| item > 3 }
 
-# puts "my_all? vs. all?"
-# numbers = [1, 2, 3, 4, 5]
-# puts numbers.my_all?  { |item| item > 3 }
-# puts numbers.all?  { |item| item > 3 }
+puts "my_all? vs. all?"
+numbers = [1, 2, 3, 4, 5]
+p numbers.my_all?
+p numbers.all?
+puts numbers.my_all? { |item| item > 3 }
+puts numbers.all? { |item| item > 3 }
 
-# puts "my_any? vs. any?"
-# numbers = [1, 2, 3, 4, 5]
-# puts numbers.my_any?  { |item| item > 3 }
-# puts numbers.any?  { |item| item > 3 }
+puts "my_any? vs. any?"
+numbers = [1, 2, 3, 4, 5]
+p numbers.my_any?
+p numbers.any?
+puts numbers.my_any? { |item| item > 3 }
+puts numbers.any? { |item| item > 3 }
 
 puts "my_none? vs. none?"
+numbers = []
+p numbers.my_none?
+p numbers.none?
 numbers = [1, 2, 3, 4, 5]
-puts numbers.my_none?  { |item| item > 3 }
-puts numbers.none?  { |item| item > 3 }
+puts numbers.my_none? { |item| item > 3 }
+puts numbers.none? { |item| item > 3 }
+
+puts "my_count vs. count"
+numbers = [1]
+p numbers.my_count
+p numbers.count
+numbers = [1, 2, 3, 4, 5]
+puts numbers.my_count { |item| item > 3 }
+puts numbers.count { |item| item > 3 }
+
+puts "my_map vs. map"
+numbers = [1]
+p numbers.my_map
+p numbers.map
+numbers = [1, 2, 3, 4, 5]
+puts numbers.my_map { |item| item > 3 }
+puts numbers.map { |item| item > 3 }
