@@ -21,9 +21,7 @@
 
 <h2>Project Extensions:</h2>
 <ul>
-    <li>Organize code into modules or more classes</li>
-    <li>Add hangman animation</li>
-    <li>Multiple save states</li>
+    <li>Implement inject method for hashes</li>
 </ul>
 
 <h2>Ruby Used:</h2>
