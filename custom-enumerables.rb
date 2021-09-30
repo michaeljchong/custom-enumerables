@@ -69,11 +69,16 @@ module Enumerable
     count
   end
 
-  def my_map(&block)
-    return to_enum(:my_map) unless block_given?
+  def my_map(a_proc = nil, &block)
+    return to_enum(:my_map) unless a_proc || block_given?
 
     map = []
-    self.my_each { |item| map << block.call(item) }
+
+    unless block_given?
+      self.my_each { |item| map << a_proc.call(item) }
+    else
+      self.my_each { |item| map << block.call(item) }
+    end
     map
   end
 
@@ -125,15 +130,15 @@ end
 # puts hash.my_select { |key, value| value > 1 }
 # puts hash.select { |key, value| value > 1 }
 
-puts "my_all? vs. all?"
-numbers = [1, 2, 3, 4, 5]
-p numbers.my_all?
-p numbers.all?
-puts numbers.my_all? { |item| item > 3 }
-puts numbers.all? { |item| item > 3 }
-hash = { a: 1, b: 2 }
-puts hash.my_all? { |key, value| value > 1 }
-puts hash.all? { |key, value| value > 1 }
+# puts "my_all? vs. all?"
+# numbers = [4]
+# p numbers.my_all?
+# p numbers.all?
+# puts numbers.my_all? { |item| item > 3 }
+# puts numbers.all? { |item| item > 3 }
+# hash = { a: 2, b: 2 }
+# puts hash.my_all? { |key, value| value > 1 }
+# puts hash.all? { |key, value| value > 1 }
 
 # puts "my_any? vs. any?"
 # numbers = [1, 2, 3, 4, 5]
@@ -141,6 +146,9 @@ puts hash.all? { |key, value| value > 1 }
 # p numbers.any?
 # puts numbers.my_any? { |item| item > 3 }
 # puts numbers.any? { |item| item > 3 }
+# hash = { a: 1, b: 2 }
+# puts hash.my_any? { |key, value| key == :a && value > 1 }
+# puts hash.any? { |key, value| key == :a && value > 1 }
 
 # puts "my_none? vs. none?"
 # numbers = []
@@ -149,6 +157,9 @@ puts hash.all? { |key, value| value > 1 }
 # numbers = [1, 2, 3, 4, 5]
 # puts numbers.my_none? { |item| item > 3 }
 # puts numbers.none? { |item| item > 3 }
+# hash = { a: 1, b: 2 }
+# puts hash.my_none? { |key, value| key == :a && value > 1 }
+# puts hash.none? { |key, value| key == :a && value > 1 }
 
 # puts "my_count vs. count"
 # numbers = [1]
@@ -157,6 +168,9 @@ puts hash.all? { |key, value| value > 1 }
 # numbers = [1, 2, 3, 4, 5]
 # puts numbers.my_count { |item| item > 3 }
 # puts numbers.count { |item| item > 3 }
+# hash = { a: 1, b: 2 }
+# puts hash.my_count { |key, value| key == :a && value == 1 }
+# puts hash.count { |key, value| key == :a && value == 1 }
 
 # puts "my_map vs. map"
 # numbers = [1]
@@ -165,6 +179,15 @@ puts hash.all? { |key, value| value > 1 }
 # numbers = [1, 2, 3, 4, 5]
 # puts numbers.my_map { |item| item > 3 }
 # puts numbers.map { |item| item > 3 }
+# a_proc = Proc.new { |item| item * 3 }
+# puts numbers.my_map(a_proc) { |item| item * 2 }
+# puts numbers.map { |item| item * 2 }
+# hash = { a: 1, b: 2 }
+# puts hash.my_map { |key, value| value + 1 }
+# puts hash.map { |key, value| value + 1 }
+# a_proc = Proc.new { |key, value| [key, value] }
+# puts hash.my_map(a_proc)
+# puts hash.map { |key, value| [key, value] }
 
 # puts "my_inject vs. inject"
 # numbers = [1]
